@@ -1,5 +1,6 @@
 <?php   
   include('db/connect.php');
+  session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,19 +70,34 @@
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">Đăng nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i> <sup
-                                        class="cart-quantity">1</sup></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -97,10 +113,11 @@
                                 <li class="active"><a href="index.php">Trang chủ</a></li>
                                 <li><a href="product-list.php">Điện thoại</a>
                                 </li>
+                                
                                 <li><a href="about.php">Thông tin</a>
                                 </li>
-                                <li><a href="blog-default.php">Bài viết</a> </li>
-                                <li><a href="contact-us.php">Liên hệ, hỗ trợ</a>
+
+                                <li><a href="contact-us.php">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>
@@ -127,7 +144,16 @@
         </div>
     </div>
     <!-- login-form -->
+    <?php 
+        $a=0;
+        if(isset($_SESSION['user']['id'])){
+            $a = $_SESSION['user']['id'];
+        }
+        $sql_user = mysqli_query($conn,"SELECT * FROM tbl_khachhang WHERE khachhang_id = $a");
+        foreach($sql_user as $row_user){
 
+    ?>
+                            
     <div class="content">
         <div class="container">
             <div class="box">
@@ -135,7 +161,7 @@
                     <div class="left-container">
                         <div class="user-infor">
                             <img src="images/user-img.png" alt="">
-                            <span>NGUYEN DU KHANH</span>
+                            <span><?php  echo $row_user['khachhang_name']?></span>
                         </div>
                         <div class="side-bar-content">
                             <ul>
@@ -149,52 +175,49 @@
                     <div class="right-container">
                         <h3 class="title-content">Thông tin tài khoản</h3>
                         <div class="account-infor">
-                            <form action="">
+
+                            <form action="" method="POST" enctype="multipart/form-data">
                                 <div class="form-control">
                                     <label for="" class="input-label">
                                         Họ & tên
                                     </label>
-                                    <input type="text" placeholder="Thêm họ tên" class="input-field">
+                                    <input type="text" name='name' placeholder="<?php  echo $row_user['khachhang_name']?>" class="input-field">
                                 </div>
                                 <div class="form-control">
                                     <label for="" class="input-label">
                                         Email
                                     </label>
-                                    <input type="email" placeholder="Thêm email" class="input-field">
+                                    <input type="text" name='email' placeholder="<?php  echo $row_user['khachhang_email']?>" class="input-field">
                                 </div>
                                
                                 <div class="form-control">
                                     <label for="" class="input-label">
                                         Số điện thoại
                                     </label>
-                                    <input type="phone" placeholder="Thêm số điện thoại" class="input-field">
+                                    <input type="text" name='phone' placeholder="<?php  echo $row_user['khachhang_number']?>" class="input-field">
                                 </div>
                                 <div class="form-control">
                                     <label for="" class="input-label">
                                         Địa chỉ giao hàng
                                     </label>
-                                    <input type="phone" placeholder="Địa chỉ" class="input-field">
+                                    <input type="text" name='diachi' placeholder="<?php  echo $row_user['khachhang_diachi']?>" class="input-field">
                                 </div>
-                                <div class="form-control">
-                                    <label for="" class="input-label">
-                                        Ngày sinh
-                                    </label>
-                                    <input type="date" placeholder="Thêm ngày sinh" class="input-field">
-                                </div>
+                                
 
-                                <div class="form-control">
-                                    <label for="" class="input-label">
-                                        Giới tính
-                                    </label>
+                                    
 
-                                    <input type="radio" name="gender" value="male" checked class="input-radio"> Nam
-                                    <input type="radio" name="gender" value="female" class="input-radio"> Nữ
-                                    <input type="radio" name="gender" value="other" class="input-radio"> Khác
-
-                                </div>
-
-                                <button class="btn-update">Cập nhật</button>
+                                <button type="submit" name='capnhat' class="btn-update">Cập nhật</button>
                             </form>
+                            <?php 
+                                if(isset($_POST['capnhat'])){
+                                    $id = $_SESSION['user']['id'];
+                                    $name = $_POST['name'];
+                                    $email = $_POST['email'];
+                                    $phone = $_POST['phone'];
+                                    $diachi = $_POST['diachi'];
+                                    $sql_user_insert = mysqli_query($conn,"UPDATE tbl_khachhang SET khachhang_name = '$name',khachhang_email = '$email',khachhang_number = '$phone',khachhang_diachi = '$diachi' WHERE khachhang_id = $id ");
+                                }
+                            ?>
                         </div>
                     </div>
                     <!-- /.features -->
@@ -202,6 +225,9 @@
             </div>
         </div>
     </div>
+    <?php 
+        }
+    ?>
     <!-- /.login-form -->
     <!-- footer -->
     <div class="footer">

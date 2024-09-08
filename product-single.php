@@ -1,5 +1,6 @@
 <?php   
   include('db/connect.php');
+  session_start();
 ?>
 
 <?php   
@@ -88,19 +89,34 @@
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">Đăng Nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i> <sup
-                                        class="cart-quantity">1</sup></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -116,7 +132,7 @@
                                 <li class="active"><a href="index.php">Trang chủ</a></li>
                                 <li><a href="product-list.php">Điện thoại</a>
                                 </li>
-                                <li><a href="blog-default.php">Bài viết</a> </li>
+                                
                                 <li><a href="about.php">Thông tin</a>
                                 </li>
 
@@ -199,7 +215,7 @@
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <div class="product-single" >
                                         <div name="product_name_select"><h2><?php echo $row_select_product_single['sanpham_name'] ?></h2></div>
-                                        
+                                        <div name="product_id_select" type="hidden" style="display:none"><?php echo $row_select_product_single['sanpham_id'] ?></div>
                                         <p class="product-price" style="font-size: 25px;" name="product_gia_select"><?php echo $row_select_product_single['sanpham_gia'] ?><strike
                                                 style="color:rgba(128, 128, 128, 0.658); font-size: 18px;">
                                                 <?php echo $row_select_product_single['sanpham_giakhuyenmai'] ?></strike>
@@ -215,15 +231,16 @@
                                                 <input class="btn-quantity increase-quantity" onclick="icQuantity()"
                                                     type="button" value="+">
                                             </div>
-                                            <span class="rest-quantity">5 sản phẩm có sẵn</span>
+                                            
                                         </div>
+                                        
                                         <div>
-                                            <a href="cart.php"><button href="cart.php" type='submit' name='muangay' class="btn btn-default btn-buy-now">
+                                            <a href="cart.php"><button  type='submit' name='muangay' class="btn btn-default btn-buy-now">
                                                 Mua Ngay
                                             </button></a>
                                             
                                             <a href="cart.php?id=<?php echo $row_select_product_single['sanpham_id'] ?>" ><button  name='giohang' type="submit" class="btn btn-default">
-                                                <i class="fa fa-shopping-cart"></i>&nbsp;Thêm vào giỏ hàng
+                                                <i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng
                                             </button></a>
 
                                         </div>
@@ -237,22 +254,33 @@
                     </div>
                 </div>
             </div>
-            <?php   
-                if(isset($_POST['giohang'])){
-                    $product_name_select = $row_select_product_single['sanpham_name'];
-                    $product_gia_select = $row_select_product_single['sanpham_gia'];
-                    $product_anh_select = $row_select_product_single['sanpham_imagine'];
-                    $sql_insert_product_select = mysqli_query($conn,"INSERT INTO tbl_cart(cart_product_name,cart_product_imagine,cart_product_gia ) VALUES ('$product_name_select','$product_anh_select','$product_gia_select') ");
-                }
+            <?php
+            
+                
+                    if(isset($_POST['muangay'])){
+                        $product_id_select  = $row_select_product_single['sanpham_id'];
+                        $product_name_select = $row_select_product_single['sanpham_name'];
+                        $product_gia_select = $row_select_product_single['sanpham_gia'];
+                        $product_khuyenmai_select = $row_select_product_single['sanpham_giakhuyenmai'];
+                        $product_anh_select = $row_select_product_single['sanpham_imagine'];
+                        $product_soluong_select = $_POST['quantity'];
+                        $sum =(int)$row_select_product_single['sanpham_giakhuyenmai']*(int)$_POST['quantity'].".000.000VND";
+                        $id_user = $_SESSION['user']['id'];
+                        $sql_insert_product_select = mysqli_query($conn,"INSERT INTO tbl_order(order_product_id,order_product_name,order_product_img,order_product_gia,order_product_khuyenmai,order_product_soluong,order_product_thanhtien,order_product_user ) VALUES ('$product_id_select','$product_name_select','$product_anh_select','$product_gia_select','$product_khuyenmai_select','$product_soluong_select','$sum','$id_user') ");}
+                
                   
-                if(isset($_POST['muangay'])){
-                    $product_name_select = $row_select_product_single['sanpham_name'];
-                    $product_gia_select = $row_select_product_single['sanpham_gia'];
-                    $product_anh_select = $row_select_product_single['sanpham_imagine'];
-                    $sql_insert_product_select = mysqli_query($conn,"INSERT INTO tbl_cart(cart_product_name,cart_product_imagine,cart_product_gia ) VALUES ('$product_name_select','$product_anh_select','$product_gia_select') ");
-                    
-                    
-            }
+                
+                    if(isset($_POST['giohang'])){
+                        $product_id_select  = $row_select_product_single['sanpham_id'];
+                        $product_name_select = $row_select_product_single['sanpham_name'];
+                        $product_gia_select = $row_select_product_single['sanpham_gia'];
+                        $product_khuyenmai_select = $row_select_product_single['sanpham_giakhuyenmai'];
+                        $product_anh_select = $row_select_product_single['sanpham_imagine'];
+                        $product_soluong_select = $_POST['quantity'];
+                        $sum =(int)$row_select_product_single['sanpham_giakhuyenmai']*(int)$_POST['quantity'].".000.000VND";
+                        $id_user = $_SESSION['user']['id'];
+                        $sql_insert_product_select = mysqli_query($conn,"INSERT INTO tbl_order(order_product_id,order_product_name,order_product_img,order_product_gia,order_product_khuyenmai,order_product_soluong,order_product_thanhtien,order_product_user ) VALUES ('$product_id_select','$product_name_select','$product_anh_select','$product_gia_select','$product_khuyenmai_select','$product_soluong_select','$sum','$id_user') ");}
+                
             ?> 
             
 
@@ -367,150 +395,7 @@
                                 thêm</button>
 
                         </div>
-                        <div class="description-right">
-                            <h2 class="dgctpro">Thông số kĩ thuật</h2>
-                            <table class="charactestic_table">
-                                <tbody>
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Hệ điều hành:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            iOS 15
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Màn hình:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            Super Retina XDR OLED, 120Hz, HDR10, Dolby Vision, 1000 nits (typ), 1200
-                                            nits (peak)
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Mặt kính cảm ứng:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            Gorilla Glass
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Màn hình rộng:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            6.1 inch (chiếm khoảng 86.0% thân máy)
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Độ phân giải:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            1170 x 2532 pixels, 19.5:9
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Ram:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            6GB
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Bộ nhớ trong:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            128GB
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            CPU:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            Apple A15 Bionic (5 nm) 6 nhân
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Chip đồ họa (GPU):
-                                        </td>
-                                        <td class="content_charactestic">
-                                            Apple GPU (5 nhân)
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Camera Sau:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            12 MP, f/1.5, 26mm (wide), 1.9µm, dual pixel PDAF, sensor-shift
-                                            stabilization (IBIS) 12 MP, f/2.8, 77mm (telephoto), PDAF, OIS, 3x optical
-                                            zoom 12 MP, f/1.8, 120˚, 13mm (ultrawide), PDAF
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Camera trước:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            12 MP, f/2.2, 23mm (wide), 1/3.6"
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Thẻ sim:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            1 SIM (Nano-SIM và/hoặc eSIM) hoặc 2 SIM (2 Nano-SIM)
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Thẻ nhớ ngoài:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            Không
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Dung lượng pin:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            Sạc nhanh 20W, đầy 50% trong 30 phút
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="title_charactestic" width="30%">
-                                            Màu sắc:
-                                        </td>
-                                        <td class="content_charactestic">
-                                            Than Chì, Vàng, Bạc, Xanh Sierra
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        
                     </div>
                 </div>
                 <!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -811,7 +696,7 @@
                                         <span class="offer-price">20%off</span>
                                     </div>
                                     <div class="shopping-btn">
-                                        <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                        
                                         <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
                                     </div>
                                 </div>
@@ -830,7 +715,7 @@
                                         <span class="offer-price">10%off</span>
                                     </div>
                                     <div class="shopping-btn">
-                                        <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                        
                                         <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
                                     </div>
                                 </div>
@@ -848,7 +733,7 @@
                                         <span class="offer-price">40%off</span>
                                     </div>
                                     <div class="shopping-btn">
-                                        <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                        
                                         <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
                                     </div>
                                 </div>
@@ -867,8 +752,7 @@
                                         <span class="offer-price">15%off</span>
                                     </div>
                                     <div class="shopping-btn">
-                                        <a href="#" class="product-btn btn-like">
-                                            <i class="fa fa-heart"></i></a>
+                                        
                                         <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
                                     </div>
                                 </div>

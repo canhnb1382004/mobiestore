@@ -1,6 +1,41 @@
 <?php   
   include('db/connect.php');
+  session_start();
 ?>
+
+<?php
+    $a = '';
+    $b = '';
+    $c = ''; 
+    if(isset($_SESSION['user']['id'])) {
+        if(isset($_POST['change_password'])){
+            $a = $_POST['password'];
+            $b = $_POST['password_new'];
+            $c = $_POST['password_new1'];                       
+            $d = $_SESSION['user']['id'];
+            $sql_user_check = mysqli_query($conn,"SELECT * FROM tbl_khachhang WHERE khachhang_id = $d"); 
+                while($row_user_check = mysqli_fetch_array($sql_user_check)){
+                    $a1 =  $row_user_check['khachhang_password'];
+                    if($a1!=$a){
+                        $_SESSION['error']['password']="Mật khẩu không đúng, vui lòng nhập lại.";
+                    
+                    }elseif($a1==$a&& $b!=$c){
+                        $_SESSION['error']['password']="Mật khẩu mới không trùng nhau, vui lòng nhập lại.";
+                    }else{
+                        $sql_user_insert = mysqli_query($conn,"UPDATE tbl_khachhang SET khachhang_password = '$b' ");
+                        echo ('<script>alert("Mật khẩu mới đã được cập nhật.")</script>'); 
+                    }
+                }    
+        }
+        
+
+    } 
+                          
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,19 +104,34 @@
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">Đăng nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i> <sup
-                                        class="cart-quantity">1</sup></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -97,10 +147,11 @@
                                 <li class="active"><a href="index.php">Trang chủ</a></li>
                                 <li><a href="product-list.php">Điện thoại</a>
                                 </li>
+                                
                                 <li><a href="about.php">Thông tin</a>
                                 </li>
-                                <li><a href="blog-default.php">Bài viết</a> </li>
-                                <li><a href="contact-us.php">Liên hệ, hỗ trợ</a>
+
+                                <li><a href="contact-us.php">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>
@@ -143,7 +194,7 @@
                                     <li class="slide-bar"><i class="fa fa-edit"></i><span>Thông tin tài khoản</span>
                                     </li>
                                 </a>
-                                <a href="">
+                                <a href="profile-receipt.php">
                                     <li class="slide-bar"><i class="fas fa-money-check"></i><span>Quản lý đơn
                                             hàng</span></li>
                                 </a>
@@ -151,7 +202,7 @@
                                     <li class="slide-bar"><i class="fas fa-map-marker-alt"></i><span> Địa chỉ nhận
                                             hàng</span></li>
                                 </a> -->
-                                <a href="reset-password.php">
+                                <a href="profile-reset-password.php">
                                     <li class="slide-bar active"><i class="fas fa-lock"></i><span> Đổi mật khẩu</span>
                                     </li>
                                 </a>
@@ -160,25 +211,33 @@
                     </div>
                     <div class="right-container">
                         <h3 class="title-content">Đổi mật khẩu</h3>
+                        
                         <div class="reset-password-content">
-                            <form action="">
+                            <form action="" method="POST" enctype="multipart/form-data">
                                 <div class="form-control">
                                     <label for="" class="input-label">Mật khẩu hiện tại</label>
-                                    <input type="password" class="input-field" id="input">
+                                    <input type="password" class="input-field" id="input" name="password">
                                 </div>
                                 <div class="form-control">
                                     <label for="" class="input-label">Mật khẩu mới</label>
-                                    <input type="password" class="input-field">
+                                    <input type="password" class="input-field" name="password_new">
                                 </div>
+                                <?php
+                                    if (isset($_SESSION['error']['password'])) {
+                                        echo "<p style='color: red;'>" . $_SESSION['error']['password'] . "</p>";
+                                        unset($_SESSION['error']['password']);
+                                    }
+                                ?>
                                 <div class="form-control">
                                     <label for="" class="input-label">Nhập lại mật khẩu</label>
-                                    <input type="password" class="input-field">
+                                    <input type="password" class="input-field" name="password_new1">
                                 </div>
-                                <button class="btn-update-password">Đổi mật khẩu</button>
+                                <button class="btn-update-password" type="submit" name="change_password">Đổi mật khẩu</button>
                             </form>
                         </div>
                     </div>
                     <!-- /.features -->
+                     
                 </div>
             </div>
         </div>

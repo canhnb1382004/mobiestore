@@ -1,13 +1,15 @@
 <?php   
   include('db/connect.php');
+  session_start();
 ?>
 
 <?php   
   if(isset($_GET['xoa'])){
     $id = $_GET['id'];
-    $sql_xoa = mysqli_query($conn,"DELETE  FROM tbl_cart WHERE cart_product_id ='$id'");
+    $sql_xoa = mysqli_query($conn,"DELETE  FROM tbl_order WHERE order_product_id ='$id'");
   }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -79,18 +81,34 @@
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">đăng nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="" class="title"><i class="fa fa-shopping-cart"></i></a></li>
-
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -103,16 +121,19 @@
                         <!-- navigations-->
                         <div id="navigation">
                             <ul>
-                                <li><a href="index.php">Trang chủ</a></li>
-                                <li><a href="product-list.php">Điện thoại</a></li>
-                                <li><a href="about.php">Thông tin</a></li>
-                                <li><a href="blog-default.php">Bài viết</a></li>
-                                <li><a href="contact-us.php">Liên hệ</a></li>
+                                <li class="active"><a href="index.php">Trang chủ</a></li>
+                                <li><a href="product-list.php">Điện thoại</a>
+                                </li>
+                                
+                                <li><a href="about.php">Thông tin</a>
+                                </li>
+
+                                <li><a href="contact-us.php">Liên hệ</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
-                </div>
-                <!-- /.navigations-->
+                    <!-- /.navigations-->
             </div>
         </div>
     </div>
@@ -136,108 +157,153 @@
     </div>
     <!-- /.page-header-->
     <!-- cart-section -->
+    <form action="" method = "POST" enctype="multipart/form-data">                       
+        <div class="container">
+            <div class="cart-content mt30 mb30">
+                
+                
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Đơn giá</th>
+                            <th scope="col">Đơn giá khuyến mãi</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Thành tiền</th>
+                            <th scope="col"></th>
 
-    <div class="container">
-        <div class="cart-content mt30 mb30">
-            
-            
-            <table class="table">
-                <thead class="thead-light">
-                    <tr>
-                        <th></th>
-                        <th>Sản phẩm</th>
-                        <th scope="col">Đơn giá</th>
-                        <th scope="col">Số lượng</th>
-                        <th scope="col">Thành tiền</th>
-                        <th scope="col"></th>
-
-                    </tr>
-                </thead>
-                <?php 
-                   
-                    $sql_cart_detail = mysqli_query($conn," SELECT * FROM tbl_cart ")
-                ?>
-                <tbody>
+                        </tr>
+                    </thead>
                     <?php 
-                        $i = 0 ;
-                        while($row_cart_detail = mysqli_fetch_array($sql_cart_detail)){
-                         $i++;   
-                    ?>
-                    
-                    <tr>
-                        <td>
-                            <div class="item-center pdl10"><input type="checkbox" class="checkboxStyle"></div>
-                        </td>
-                        <td>
-                            <div class="product-title item-center">
-                                <img src="imagine_product/<?php echo $row_cart_detail['cart_product_imagine'] ?>" alt="">
-                                <div>
-                                    <p><?php echo $row_cart_detail['cart_product_name'] ?></p>
-                                    
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="item-center"><?php echo $row_cart_detail['cart_product_gia'] ?></div>
-                        </td>
-                        <td>
-                            <div class="item-center">
-                                <div class="quantity">
-                                    <input class="btn-quantity decrease-quantity" onclick="dcQuantity()" type="button"
-                                        value="-">
-                                    <input type="number" max="10" min="1" name="quantity" value="1"
-                                        class="quantity-input" id="quantity-input" >
-                                    <input class="btn-quantity increase-quantity" onclick="icQuantity()" type="button"
-                                        value="+">
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="item-center text-red"><?php echo $row_cart_detail['cart_product_gia']    ?></div>
-                        </td>
-                        <td>
-                            <a href='?xoa&&id=<?php echo $row_cart_detail['cart_product_id']?>' ><div class="item-center pinside10">
-                                <i name='xoa' class="far fa-trash-alt"></i></div></a>
-                            
-                        </td>
-                    </tr>
-                </tbody>
-                <?php 
+                         $a=0;
+                        if(isset($_SESSION['user']['id'])){
+                            $a = $_SESSION['user']['id'];
                         }
-                ?>
-            </table>
-            <div class="prices-summary">
-                <div class="left-content">
-                    <a href="product-list.php" class="derection-product text-blue"><i class="fas fa-long-arrow-alt-left"></i> Tiếp tục
-                        mua hàng</a>
-                </div>
-                <!-- <div class="right-con">
-                    <div class="total-receipt">
-                        <div class="promotion-code pinside20">
-                            <input type="text" class="input-code" placeholder="Nhập mã ưu đãi">
-                            <button type="submit" class="submit-code btn-default">Áp dụng</button>
-                        </div>
-                        <ul class="prices pinside20">
-                            <li class="prices-item">
-                                <span class="prices-text">Tạm tính</span>
-                                <span class="prices-value">47.750.000đ</span>
-                            </li>
-                            <li class="prices-item">
-                                <span class="prices-text">Giảm giá</span>
-                                <span class="prices-value">0đ</span>
-                            </li>
-                        </ul>
-                        <div class="prices-total pinside20">
-                            <span class="price-text">Tổng cộng</span>
-                            <span class="prices-value prices-final text-red">47.750.000đ</span>
-                        </div>
+                        
+                        $sql_order = mysqli_query($conn," SELECT * FROM tbl_order WHERE order_product_user= $a")
+                    ?>
+                    <tbody>
+                        <?php 
+                            
+                            $sum1=0;
+                            if(isset($_SESSION['user']['login'])){
+                            while($row_order_details = mysqli_fetch_array($sql_order)){
+                            
+
+                                
+                        ?>
+                        
+                        <tr>
+                            <td>
+                                <div class="item-center pdl10"><input type="checkbox" class="checkboxStyle"></div>
+                            </td>
+                            <td>
+                                <div class="product-title item-center">
+                                    <img name="product_img" src="imagine_product/<?php echo $row_order_details['order_product_img'] ?>" alt="">
+                                    <div>
+                                        <p name="product_name"><?php echo $row_order_details['order_product_name'] ?></p>
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div name="product_gia" class="item-center"><?php echo $row_order_details['order_product_gia'] ?></div>
+                            </td>
+                            <td>
+                                <div name="product_khuyenmai" class="item-center"><?php echo $row_order_details['order_product_khuyenmai'] ?></div>
+                            </td>
+                            <td>
+                                <div class="item-center" name="product_soluong">
+                                    <div class="quantity">
+                                        <?php echo $row_order_details['order_product_soluong']?>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="item-center text-red" name="thanhtien"><?php echo $row_order_details['order_product_thanhtien']?></div>
+                            </td>
+                            <td>
+                                <a href='?xoa&&id=<?php echo $row_order_details['order_product_id']?>' ><div class="item-center pinside10">
+                                    <i name='xoa' class="far fa-trash-alt"></i></div></a>
+                                
+                            </td>
+                        </tr>
+                        <?php 
+                            if(isset($_POST['muahang'])){
+                                $user_id=$_SESSION['user']['id'];
+                                $product_img = $row_order_details['order_product_img'];
+                                $product_name = $row_order_details['order_product_name'];
+                                $product_gia = $row_order_details['order_product_gia'];
+                                $product_khuyenmai = $row_order_details['order_product_khuyenmai'];
+                                $product_thanhtien = $row_order_details['order_product_thanhtien'];
+                                $product_soluong = $row_order_details['order_product_soluong'];
+                                $product_insert_donhang = mysqli_query($conn,"INSERT INTO tbl_donhang(donhang_user,donhang_product_img,donhang_product_name,donhang_product_gia,donhang_khuyenmai,donhang_thanhtien,donhang_product_soluong) VALUES ('$user_id','$product_img','$product_name','$product_gia','$product_khuyenmai','$product_thanhtien','$product_soluong')");
+                                //$product_delete_cart = mysqli_query($conn,"DELETE FROM tbl_order(donhang_user,donhang_product_img,donhang_product_name,donhang_product_gia,donhang_khuyenmai,donhang_thanhtien,donhang_product_soluong) VALUES ('$user_id','$product_img','$product_name','$product_gia','$product_khuyenmai','$product_thanhtien','$product_soluong')");
+                             }
+                             
+                        }
+                        }
+                        ?>
+
+                    </tbody>
+                    
+                    
+                </table>
+                <div class="prices-summary">
+                    <div class="left-content">
+                        <a href="product-list.php" class="derection-product text-blue"><i class="fas fa-long-arrow-alt-left"></i> Tiếp tục
+                            mua hàng</a>
                     </div>
-                    <a href="checkout.php" class="btn-default btn-checkout">Mua Hàng</a>
-                </div> -->
+                    <div class="right-con">
+                        <div class="total-receipt">
+                            <!-- <div class="promotion-code pinside20">
+                                <input type="text" class="input-code" placeholder="Nhập mã ưu đãi">
+                                <button type="submit" class="submit-code btn-default">Áp dụng</button>
+                            </div>
+                            <ul class="prices pinside20">
+                                <li class="prices-item">
+                                    <span class="prices-text">Tạm tính</span>
+                                    <span class="prices-value">47.750.000đ</span>
+                                </li>
+                                <li class="prices-item">
+                                    <span class="prices-text">Giảm giá</span>
+                                    <span class="prices-value">0đ</span>
+                                </li> -->
+                            </ul>
+                            <div class="prices-total pinside20">
+                                <span class="price-text">Tổng cộng</span
+                                <span class="prices-value prices-final text-red" name="tongcong"><?php 
+                            $sum2 = 0;
+                            $sum= mysqli_query($conn,"SELECT SUM(order_product_thanhtien) AS order_product_user FROM tbl_order WHERE order_product_user= $a");
+                            $sum1 = mysqli_fetch_assoc($sum);
+                            if(isset($sum1)){
+                                echo $sum2 = $sum1['order_product_user'].".000.000VND";
+                            }else{
+                                echo $sum2 ;
+                            }  ?></span>
+                            </div>
+                            
+                        </div>
+                        <?php 
+                        if(isset($_POST['muahang'])){
+                            $user_id=$_SESSION['user']['id'];
+                            $tongcong=$sum2;
+                            $product_insert_donhang = mysqli_query($conn,"INSERT INTO tbl_admin_donhang(admin_makhachhang,admin_tonggiatri) VALUES ('$user_id','$tongcong')");
+                        }
+                    ?>
+                        <a><button name="muahang" class="btn btn-success" type="submit">Đặt Hàng</button></a>
+                        <!-- <a href="checkout.php"  name = "muahang"class="btn-default btn-checkout">Mua Hàng</a> -->
+                    </div>
+                </div>
             </div>
+            
         </div>
-    </div>
+    </form>     
     <!-- /.cart-total -->
+    <?php   
+        
+    ?>
     </div>
 
     <!-- /.cart-section -->

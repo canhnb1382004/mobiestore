@@ -1,5 +1,6 @@
 <?php   
   include('db/connect.php');
+  session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,19 +70,34 @@
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">Đăng Nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i> <sup
-                                        class="cart-quantity">1</sup></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -97,7 +113,7 @@
                                 <li class="active"><a href="index.php">Trang chủ</a></li>
                                 <li><a href="product-list.php">Điện thoại</a>
                                 </li>
-                                <li><a href="blog-default.php">Bài viết</a> </li>
+                                
                                 <li><a href="about.php">Thông tin</a>
                                 </li>
 
@@ -135,188 +151,28 @@
                     <!-- sidenav-section -->
                     <div id='cssmenu'>
                         <ul>
-                            <li class='has-sub'><a href='#'>Hệ điều hành</a>
+                            <li class='has-sub'><a href='#'>Thương Hiệu</a>
                                 <ul>
 
                                     <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Tất cả</span></label>
+                                        <a href="product-list.php">
+                                        <label>Tất Cả</label>
+                                        </a>
                                     </li>
                                     <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Android</span></label>
+                                        <a href="product-list.php?loaisp=iphone">
+                                        <label>Iphone</label>
+                                        </a>
                                     </li>
                                     <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">ISO</span>
-                                        </label>
+                                        <a href="product-list.php?loaisp=samsung">
+                                        <label>SamSung<label>
+                                        </a>
                                     </li>
 
                                 </ul>
                             </li>
-                            <li class='has-sub'><a href='#'>Hãng sản xuất</a>
-                                <ul>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Tất cả </span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Samsung</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Apple</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Xiaomi</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Vsmart</span>
-                                        </label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">OPPO</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Vivo</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Nokia</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Huawei</span>
-                                        </label>
-                                    </li>
-
-                                </ul>
-                            </li>
-                            <li class='has-sub'><a href='#'>Giá Bán</a>
-                                <ul>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Tất cả</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Dưới 2 triệu</span>
-                                        </label>
-                                    </li>
-                                    <li><span>
-                                            <label>
-                                                <input type="checkbox">
-                                                <span class="checkbox-list">Từ 2 - 5 triệu</span>
-                                            </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Từ 5 - 10 triệu</span>
-                                        </label>
-                                    </li>
-
-                                    <li><span>
-                                            <label>
-                                                <input type="checkbox">
-                                                <span class="checkbox-list">Từ 10 - 15 triệu</span>
-                                            </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Trên 15 triệu</span>
-                                        </label>
-                                    </li>
-
-                                </ul>
-                            </li>
-                            <li class='has-sub'><a href='#'>Màn hình</a>
-                                <ul>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Tất cả</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Dưới 5.0 inch</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Trên 6.0 inch</span>
-                                        </label>
-                                    </li>
-
-                                </ul>
-                            </li>
-                            <li class='has-sub'><a href='#'>Bộ nhớ trong</a>
-                                <ul>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Tất cả</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Dưới 32GB</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">64GB và 128GB</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">256GB và 512GB</span>
-                                        </label>
-                                    </li>
-
-                                    <li>
-                                        <label>
-                                            <input type="checkbox">
-                                            <span class="checkbox-list">Trên 512GB</span>
-                                        </label>
-                                    </li>
-                                </ul>
-                            </li>
+                            
 
                         </ul>
                     </div>
@@ -338,7 +194,14 @@
                         </div>
                     </div>
                     <?php 
-                         $sql_select_pro = mysqli_query($conn,'SELECT * FROM tbl_sanpham')
+                        if(isset($_GET['loaisp'])){
+                            $loaisp=$_GET['loaisp'];
+                            $sql_select_pro = mysqli_query($conn,"SELECT * FROM tbl_sanpham,tbl_category WHERE tbl_sanpham.category_id=tbl_category.category_id AND tbl_category.category_name = '$loaisp'");
+                        }
+                        else{
+                            $sql_select_pro = mysqli_query($conn,"SELECT * FROM tbl_sanpham,tbl_category WHERE tbl_sanpham.category_id=tbl_category.category_id ");
+                        }
+                         
                         ?>
                         
                     <div class="row">
@@ -358,7 +221,7 @@
                                             
                                         </div>
                                         <div class="shopping-btn">
-                                            <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                            
                                             <a href="#" class="product-btn btn-cart"><i
                                                     class="fa fa-shopping-cart"></i></a>
                                         </div>

@@ -186,10 +186,10 @@ hr {
 
 .control-label {
   font-size: 13px;
-  text-transform: capitalize;
+ 
   color: #3c424b;
   margin-bottom: 10px;
-  text-transform: uppercase;
+  
   letter-spacing: 1px;
 }
 
@@ -207,7 +207,6 @@ hr {
   line-height: 1.42857143;
   border: 2px solid #e8ecf0;
   background-color: #fff;
-  text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 12px;
   -webkit-box-shadow: inset 0 0px 0px rgba(0, 0, 0, 0.075);

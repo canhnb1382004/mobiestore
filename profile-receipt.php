@@ -1,5 +1,6 @@
 <?php   
   include('db/connect.php');
+  session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,19 +70,34 @@
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">Đăng nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i> <sup
-                                        class="cart-quantity">1</sup></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -97,10 +113,11 @@
                                 <li class="active"><a href="index.php">Trang chủ</a></li>
                                 <li><a href="product-list.php">Điện thoại</a>
                                 </li>
+                                
                                 <li><a href="about.php">Thông tin</a>
                                 </li>
-                                <li><a href="blog-default.php">Bài viết</a> </li>
-                                <li><a href="contact-us.php">Liên hệ, hỗ trợ</a>
+
+                                <li><a href="contact-us.php">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>
@@ -135,12 +152,12 @@
                     <div class="left-container">
                         <div class="user-infor">
                             <img src="images/user-img.png" alt="">
-                            <span>NGUYEN DU KHANH</span>
+                            <span><?php echo $_SESSION['user']['login'] ?></span>
                         </div>
                         <div class="side-bar-content">
                             <ul>
                                 <a href="account.php"><li class="slide-bar "><i class="fa fa-edit"></i><span>Thông tin tài khoản</span></li></a>
-                                <a href=""><li class="slide-bar active"><i class="fas fa-money-check"></i><span>Quản lý đơn hàng</span></li></a>
+                                <a href="profile-receipt.php"><li class="slide-bar active"><i class="fas fa-money-check"></i><span>Quản lý đơn hàng</span></li></a>
                                 <!-- <a href="address-deliver.html"><li class="slide-bar"><i class="fas fa-map-marker-alt"></i><span> Địa chỉ nhận hàng</span></li></a> -->
                                 <a href="profile-reset-password.php"> <li class="slide-bar"><i class="fas fa-lock"></i><span> Đổi mật khẩu</span></li></a>
                             </ul>
@@ -155,21 +172,32 @@
                                   <tr>
                                     <th scope="col">Mã đơn hàng</th>
                                     <th scope="col">Tên khách hàng</th>
-                                    <th scope="col">Ngày đặt hàng</th>
+                                   
                                     <th scope="col">Chi tiết đơn hàng</th>
                                      <th scope="col">Tình trạng đơn hàng</th>
                                   </tr>
                                 </thead>
+                                <?php
+                                            $a = 0;
+                                            if(isset($_SESSION['user']['id'])) {
+                                                $a = $_SESSION['user']['id'];
+                                            }
+                                            $sql_user_product2 = mysqli_query($conn,"SELECT* FROM tbl_admin_donhang WHERE admin_makhachhang = $a");
+                                            foreach($sql_user_product2 as $row_user_product2){
+                                        ?>
                                 <tbody>
                                   <tr>
-                                    <th scope="row">DH01</th>
-                                    <td>Du Khánh</td>
-                                    <td>10/10/2021</td>
+                                    <th scope="row"><?php echo $row_user_product2['admin_donhang_id'] ?></th>
+                                    <td><?php echo $_SESSION['user']['login'] ?></td>
+                                    
                                     <td><a href="profile-receipt-details.php">Xem chi tiết</a></td>
-                                    <td>Đang giao hàng</td>
+                                    <td>Chờ Xác Định</td>
                                   </tr>
                                   
                                 </tbody>
+                                <?php 
+                                            }
+                                ?>
                               </table>
                         </div>
                     </div>

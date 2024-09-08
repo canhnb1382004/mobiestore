@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/css_admin/admin1.css">
   <link rel="stylesheet" href="../css/css_admin/admin.css">
-
+  <link rel="stylesheet" href="../js/js_admin/script.js">
 </head>
 
 <body>
@@ -62,7 +62,7 @@
                 <ul>
                     
                     <li>
-                        <a href="dataUser.php" class="list-group-item list-group-item-action ">
+                        <a href="dataUser.php" class="list-group-item list-group-item-action  active">
                             Thông tin người dùng<i class="menu-icon fas fa-users font-list"></i></a>
                     </li>
                     <li>
@@ -74,7 +74,7 @@
                             hàng <i class="menu-icon fas fa-shopping-cart font-list"></i></a>
                     </li>
                     <li>
-                        <a href="admin-branch.php" class="list-group-item list-group-item-action active "> Thông
+                        <a href="admin-branch.php" class="list-group-item list-group-item-action  "> Thông
                             tin
                             thương hiệu <i class="menu-icon fas fa-archway"></i></a>
                     </li>
@@ -161,20 +161,7 @@
                       <div class=" mb-2">
                         <h4 class="text-center mt-3 mb-4">Danh sách khách hàng</h4>
                         <div class="row">
-                          <div class="show-page mb-3 ml-3">
-
-                            Hiển thị <span> <select id="show" onclick="select_page()">
-                                <option value="10">
-                                  10
-                                </option>
-                                <option value="20">
-                                  20
-                                </option>
-                                <option value="50">
-                                  50
-                                </option>
-                              </select></span> cột
-                          </div>
+                          
 
                           <div class="show-page  arrange">
 

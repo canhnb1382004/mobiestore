@@ -31,6 +31,7 @@
   <link href="../css/css_admin/admin.css" rel="stylesheet" />
   <link rel="stylesheet" href="../css/css_admin/admin1.css">
   <!-- (1): Khai báo sử dụng thư viện CKEditor -->
+  <link rel="stylesheet" href="../js/js_admin/script.js">
   <script src="../ckeditor/ckeditor.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>

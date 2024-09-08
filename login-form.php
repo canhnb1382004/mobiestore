@@ -1,29 +1,42 @@
 <?php   
   include('db/connect.php');
+  session_start();
+ 
 ?>
 
 <?php   
 if(isset($_POST['dangnhap'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $sql_guess = mysqli_query($conn,"SELECT*FROM tbl_khachhang");
-    $sql_admin = mysqli_query($conn,"SELECT*FROM tbl_admin");
-    while($row_guess = mysqli_fetch_array($sql_guess)){
-        if($email==$row_guess['khachhang_email'] && $password==$row_guess['khachhang_password']){
-            header('Location:index.php');
-        }
-        else{
-            echo ('<h1>Vui Lòng Đăng Nhập Lại</h1>');
-        }
-    }
-    while($row_admin = mysqli_fetch_array($sql_admin)){
-        if($email==$row_admin['admin_email'] && $password==$row_admin['admin_password']){
-            header('Location:http://localhost:8080/WEB-BAN-DIEN-THOAI/admin/admin.php');
-        }
-        else{
-            echo ('<h1>Vui Lòng Đăng Nhập Lại</h1>');
-        }
-    }
+    $sql_guess = mysqli_query($conn,"SELECT*FROM tbl_khachhang WHERE khachhang_email='$email' AND khachhang_password='$password' LIMIT 1" );
+    $row_guess1 = mysqli_fetch_array($sql_guess);
+    $row_guess = mysqli_num_rows($sql_guess);
+    // if($row_guess>0){
+        
+    //     $_SESSION['user']['login'] = $row_guess1['khachhang_name'] ;
+    //     $_SESSION['user']['id'] = $row_guess1['khachhang_id'];
+        
+    //     header("Location:index.php");
+    // }else{
+        
+    //     echo ('<script>alert("Tài khoản hoặc Mật khẩu không đúng,vui lòng nhập lại.")</script>');
+    //     header("Location:login-form.php");
+        
+    // }
+
+    // $sql_admin = mysqli_query($conn,"SELECT*FROM tbl_admin WHERE admin_email='$email' AND admin_password='$password' LIMIT 1" );
+    // $row_admin = mysqli_num_rows($sql_admin);
+    // if($row_admin>0){
+    //     header("Location:Admin/admin.php");
+    // }else{
+    //     echo ('<script>alert("Tài khoản hoặc Mật khẩu không đúng,vui lòng nhập lại.")</script>');
+    //     header("Location:login-form.php");
+        
+    // }
+    
+        
+        
+    //     $_SESSION['user']['id'] = $sql_guess['khachhang_id'];
 }
 ?>
 
@@ -99,18 +112,34 @@ if(isset($_POST['dangnhap'])){
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">Đăng nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -126,10 +155,11 @@ if(isset($_POST['dangnhap'])){
                                 <li class="active"><a href="index.php">Trang chủ</a></li>
                                 <li><a href="product-list.php">Điện thoại</a>
                                 </li>
+                                
                                 <li><a href="about.php">Thông tin</a>
                                 </li>
-                                <li><a href="blog-default.php">Bài viết</a> </li>
-                                <li><a href="contact-us.php">Liên hệ, hỗ trợ</a>
+
+                                <li><a href="contact-us.php">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>
@@ -167,8 +197,14 @@ if(isset($_POST['dangnhap'])){
                                 <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 mb20">
                                     <h3 class="mb10">Đăng nhập</h3>
                                 </div>
+                                <?php
+                                    if(isset($_SESSION['error'])) {
+                                        echo "<p style='color: red;'>".$_SESSION['error']."</p>";
+                                        unset($_SESSION['error']);
+                                    }
+                                ?>
                                 <!-- form -->
-                                <form method="POST" enctype="multipart/form-data">
+                                <form method="POST" enctype="multipart/form-data" action="./actionController.php" name="login">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label sr-only" for="email"></label>

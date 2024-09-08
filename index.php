@@ -1,6 +1,13 @@
 <?php   
   include('db/connect.php');
+  session_start();
+
 ?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,6 +59,7 @@
     </div>
 </div>
 <!-- header-section-->
+ 
 <div class="header-wrapper">
     <div class="container">
         <div class="row">
@@ -74,10 +82,26 @@
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                 <div class="account-section">
                     <ul>
-                        <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
                         <li class="hidden-xs">|</li>
-                        <li><a href="login-form.php" class="title hidden-xs">Đăng nhập</a></li>
-                        <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
                         <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
                         </li>
                     </ul>
@@ -94,23 +118,25 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <!-- navigations-->
                     <div id="navigation">
-                        <ul>
-                            <li class="active"><a href="index.php">Trang chủ</a></li>
-                            <li><a href="product-list.php">Điện thoại</a>
-                            </li>
-                            <li><a href="about.php">Thông tin</a>
-                            </li>
-                            <li><a href="blog-default.php">Bài viết</a> </li>
-                            <li><a href="contact-us.php">Liên hệ, hỗ trợ</a>
-                            </li>
-                        </ul>
+                            <ul>
+                                <li class="active"><a href="index.php">Trang chủ</a></li>
+                                <li><a href="product-list.php">Điện thoại</a>
+                                </li>
+                                
+                                <li><a href="about.php">Thông tin</a>
+                                </li>
+
+                                <li><a href="contact-us.php">Liên hệ</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <!-- /.navigations-->
+                    <!-- /.navigations-->
             </div>
         </div>
     </div>
 </div>
+
 <!-- /. header-section-->
 <!-- slider -->
 <div class="slider">
@@ -172,89 +198,8 @@
     </div>
 </div>
 <!-- /.slider -->
-<!-- mobile showcase -->
-<div class="space-medium">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                <div class="showcase-block">
-                    <div class="display-logo ">
-                        <a href="#"> <img src="images/nexus.png" alt=""></a>
-                    </div>
-                    <div class="showcase-img">
-                        <a href="#"> <img src="images/display_img_1.png" alt=""></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                <div class="showcase-block active">
-                    <div class="display-logo alignleft">
-                        <a href="#">  <img src="images/iphone.png" alt="">
-                        </a>
-                    </div>
-                    <div class="showcase-img">
-                        <a href="#"> <img src="images/display_img_2.png" alt="" style="padding-left: 80px;"></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                <div class="showcase-block ">
-                    <div class="display-logo ">
-                        <a href="#"> <img src="images/samsung.png" alt="">
-                        </a>
-                    </div>
-                    <div class="showcase-img">
-                        <a href="#"><img src="images/display_img_3.png" alt="">                    </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="showcase-block">
-                    <div class="display-logo ">
-                        <a href="#"><img src="images/htc.png" alt=""></a>
-                    </div>
-                    <div class="showcase-img">
-                        <a href="#"><img src="images/display_img_4.png" alt=""></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="showcase-block">
-                    <div class="display-logo">
-                        <a href="#">  <img src="images/alcatel.png" alt=""></a>
-                    </div>
-                    <div class="showcase-img">
-                        <a href="#"> <img src="images/display_img_5.png" alt="">
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="showcase-block">
-                    <div class="display-logo ">
-                        <a href="#"><img src="images/pixel.png" alt=""></a>
-                    </div>
-                    <div class="showcase-img">
-                        <a href="#">    <img src="images/display_img_6.png" alt=""></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="showcase-block">
-                    <div class="display-logo ">
-                        <a href="#">  <img src="images/vivo.png" alt=""></a>
-                    </div>
-                    <div class="showcase-img">
-                        <a href="#"><img src="images/display_img_7.png" alt=""></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /.mobile showcase -->
+<br>
+<br>
 <!-- latest products -->
 <div class="container">
     <div class="row">
@@ -279,10 +224,10 @@
                                     <h5><a href="product-single.php?id=<?php echo $row_pro1['sanpham_id']?>" class="product-title"><?php echo $row_pro1['sanpham_name']?></a></h5>
                                     <div class="product-meta"><a href="#" echo class="product-price"><?php echo $row_pro1['sanpham_gia']?></a>
                                         <a href="product-single.php?id=<?php echo $row_pro1['sanpham_id']?>" class="discounted-price"><strike><?php echo $row_pro1['sanpham_giakhuyenmai']?></strike></a>
-                                        <span class="offer-price">40%off</span>
+                                        
                                     </div>
                                     <div class="shopping-btn">
-                                        <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                        
                                         <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
                                     </div>
                                 </div>
@@ -323,10 +268,10 @@
                                     <h5><a href="product-single.php?id=<?php echo $row_pro2['sanpham_id']?>" class="product-title"><?php echo $row_pro2['sanpham_name']?></a></h5>
                                     <div class="product-meta"><a href="#" echo class="product-price"><?php echo $row_pro2['sanpham_gia']?></a>
                                         <a href="product-single.php?id=<?php echo $row_pro2['sanpham_id']?>" class="discounted-price"><strike><?php echo $row_pro2['sanpham_giakhuyenmai']?></strike></a>
-                                        <span class="offer-price">40%off</span>
+                                        
                                     </div>
                                     <div class="shopping-btn">
-                                        <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                        
                                         <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
                                     </div>
                                 </div>
@@ -367,10 +312,10 @@
                                     <h5><a href="product-single.php?id=<?php echo $row_pro3['sanpham_id']?>" class="product-title"><?php echo $row_pro3['sanpham_name']?></a></h5>
                                     <div class="product-meta"><a href="#" echo class="product-price"><?php echo $row_pro3['sanpham_gia']?></a>
                                         <a href="product-single.php?id=<?php echo $row_pro3['sanpham_id']?>" class="discounted-price"><strike><?php echo $row_pro3['sanpham_giakhuyenmai']?></strike></a>
-                                        <span class="offer-price">40%off</span>
+                                        
                                     </div>
                                     <div class="shopping-btn">
-                                        <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                        
                                         <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
                                     </div>
                                 </div>

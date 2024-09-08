@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="../fonts/fontawesome-free-5.15.4-web/css/all.min.css">
     <link rel="stylesheet" href="../css/css_admin/admin1.css">
     <link rel="stylesheet" href="../css/css_admin/admin.css">
-
+    <link rel="stylesheet" href="../js/js_admin/script.js">
 </head>
 
 <body>
@@ -155,19 +155,7 @@
                                             <div class=" mb-2">
                                                 <h4 class="text-center mt-3 mb-4">Danh sách đơn hàng bị hủy</h4>
                                                 <div class="row">
-                                                    <div class="show-page mb-3 ml-3">
-                                                        Hiển thị <span> <select id="show" onclick="select_page()">
-                                                                <option value="10">
-                                                                    10
-                                                                </option>
-                                                                <option value="20">
-                                                                    20
-                                                                </option>
-                                                                <option value="50">
-                                                                    50
-                                                                </option>
-                                                            </select></span> cột
-                                                    </div>
+                                                    
                                                     <div class="show-page " style="margin-left: 50px;">
 
                                                         Tìm kiếm <span> <input id="myInput"

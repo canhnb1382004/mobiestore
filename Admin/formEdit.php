@@ -44,6 +44,7 @@ if(isset($_POST['capnhatsanpham'])) {
   </link><!-- Custom styles for this template -->
   <link href="../css/css_admin/admin.css" rel="stylesheet" />
   <link rel="stylesheet" href="../css/css_admin/admin1.css">
+  <link rel="stylesheet" href="../js/js_admin/script.js">
   <!-- (1): Khai báo sử dụng thư viện CKEditor -->
   <script src="../ckeditor/ckeditor.js"></script>
 </head>

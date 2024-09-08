@@ -1,5 +1,6 @@
 <?php   
   include('db/connect.php');
+  session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,19 +71,34 @@
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">Đăng nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i> <sup
-                                        class="cart-quantity">1</sup></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -98,10 +114,11 @@
                                 <li class="active"><a href="index.php">Trang chủ</a></li>
                                 <li><a href="product-list.php">Điện thoại</a>
                                 </li>
+                                
                                 <li><a href="about.php">Thông tin</a>
                                 </li>
-                                <li><a href="blog-default.php">Bài viết</a> </li>
-                                <li><a href="contact-us.php">Liên hệ, hỗ trợ</a>
+
+                                <li><a href="contact-us.php">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>
@@ -128,7 +145,14 @@
         </div>
     </div>
     <!-- login-form -->
-
+    <?php
+        $a = 0;
+        if(isset($_SESSION['user']['id'])) {
+            $a = $_SESSION['user']['id'];
+        }
+        $sql_user_product = mysqli_query($conn,"SELECT* FROM tbl_khachhang WHERE khachhang_id = $a");
+        foreach($sql_user_product as $row_user_product){
+    ?>                        
     <div class="content">
         <div class="container">
             <div class="box">
@@ -136,7 +160,7 @@
                     <div class="left-container">
                         <div class="user-infor">
                             <img src="images/user-img.png" alt="">
-                            <span>NGUYEN DU KHANH</span>
+                            <span><?php echo $_SESSION['user']['login']?></span>
                         </div>
                         <div class="side-bar-content">
                             <ul>
@@ -162,76 +186,87 @@
                                 <div class="left-content content">
                                     <h4>ĐƠN HÀNG</h4>
                                     <p class="receipt-id">Mã đơn hàng: DH01</p>
-                                    <p class="receipt-time">Đặt hàng: 10/10/2021</p>
+                                    
                                 </div>
                                 <p></p>
                                 <div class="right-content content">
                                     <h4>THÔNG TIN NHẬN HÀNG</h4>
-                                    <p><strong>NGUYỄN DU KHÁNH</strong> - 0364413771</p>
-                                    <p class="address">số nhà 82, đường 30, khu phố 6 - Phường Bình Chiểu - Thành phố
-                                        Thủ Đức - Hồ Chí Minh</p>
+                                    <p><strong><?php echo $_SESSION['user']['login']?></strong> - <?php echo $row_user_product['khachhang_number'] ?></p>
+                                    <p class="address"><?php echo $row_user_product['khachhang_diachi'] ?></p>
                                 </div>
                             </div>
+                            <?php 
+                                }   
+                            ?>
                             <table class="table">
                                 <thead class="thead-light">
                                     <tr>
                                         <th>Sản phẩm</th>
                                         <th scope="col">Đơn giá</th>
+                                        <th scope="col">Giá Khuyến Mãi</th>
                                         <th scope="col">Số lượng</th>
                                         <th scope="col">Thành tiền</th>
                                     </tr>
                                 </thead>
+                                <?php
+                                    $a = 0;
+                                    if(isset($_SESSION['user']['id'])) {
+                                        $a = $_SESSION['user']['id'];
+                                    }
+                                    $sql_user_product1 = mysqli_query($conn,"SELECT* FROM tbl_donhang WHERE donhang_user = $a");
+                                    foreach($sql_user_product1 as $row_user_product1){
+                                ?>
                                 <tbody>
                                     <tr>
                                         <td>
                                             <div class="product-title">
-                                                <img src="images/iPhone_13.jpg" alt="">
+                                                <img src="imagine_product/<?php echo $row_user_product1['donhang_product_img'] ?>" alt="">
                                                 <div>
-                                                    <p>iPhone 13 Pro 128GB</p>
-                                                    <p>Màu sắc: Đỏ</p>
+                                                    <p><?php echo $row_user_product1['donhang_product_name'] ?></p>
+                                                    
                                                 </div>
                                             </div>
                                         </td>
-                                        <td><div class="item-center">30.750.000đ</div></td>
-                                        <td><div class="item-center">1</div></td>
-                                        <td><div class="item-center">30.750.000đ</div></td>
+                                        <td><div class="item-center"><?php echo $row_user_product1['donhang_product_gia'] ?></div></td>
+                                        <td><div class="item-center"><?php echo $row_user_product1['donhang_khuyenmai'] ?></div></td>
+                                        <td><div class="item-center"><?php echo $row_user_product1['donhang_product_soluong'] ?></div></td>
+                                        <td><div class="item-center"><?php echo $row_user_product1['donhang_thanhtien'] ?></div></td>
                                     </tr>
 
-                                    <tr>
-                                        <td>
-                                            <div class="product-title">
-                                                <img src="images/iphone11.png" alt="">
-                                                <div>
-                                                    <p>iPhone 11 Pro 128GB</p>
-                                                    <p>Màu sắc: Xanh</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><div class="item-center">17.000.000đ</div></td>
-                                        <td><div class="item-center">1</div></td>
-                                        <td><div class="item-center">17.000.000đ</div></td>
-                                    </tr>
+                                    
 
                                 </tbody>
-
+                                <?php 
+                                    }
+                                ?>
                                 <tfoot>
                                     <tr>
                                         <td scope="row"></td>
                                         <td></td>
                                         <td scope="row">
                                             <div>
-                                                <p>Tổng tiền:</p>
-                                                <p>Phí vận chuyển:</p>
+                                                
+                                                
                                                 <p>Tổng thanh toán:</p>
                                             </div>
                                         </td>
+                                        <?php
+                                            $a = 0;
+                                            if(isset($_SESSION['user']['id'])) {
+                                                $a = $_SESSION['user']['id'];
+                                            }
+                                            $sql_user_product2 = mysqli_query($conn,"SELECT* FROM tbl_admin_donhang WHERE admin_makhachhang = $a");
+                                            foreach($sql_user_product2 as $row_user_product2){
+                                        ?>
                                         <td>
                                             <div>
-                                                <p>47.750.000đ</p>
-                                                <p>50.000đ</p>
-                                                <p>47.800.000đ</p>
+                                                <p><?php echo $row_user_product2['admin_tonggiatri'] ?></p>
+                                                
                                             </div>
                                         </td>
+                                        <?php 
+                                            }
+                                        ?>
                                     </tr>
 
                                 </tfoot>

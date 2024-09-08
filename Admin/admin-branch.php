@@ -30,7 +30,7 @@
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
     <link rel="stylesheet" href="assets/css/admin.css">
     <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
-
+    <link rel="stylesheet" href="../js/js_admin/script.js">
     <link rel="stylesheet" href="../fonts/fontawesome-free-5.15.4-web/css/all.min.css">
     <link rel="stylesheet" href="../css/css_admin/admin1.css">
     <link rel="stylesheet" href="../css/css_admin/admin.css">
@@ -62,7 +62,7 @@
                 </div>
               </div>
             <div class="list-group list-group-flush">
-                <ul>
+            <ul>
                     
                     <li>
                         <a href="dataUser.php" class="list-group-item list-group-item-action ">
@@ -77,7 +77,7 @@
                             hàng <i class="menu-icon fas fa-shopping-cart font-list"></i></a>
                     </li>
                     <li>
-                        <a href="admin-branch.php" class="list-group-item list-group-item-action active "> Thông
+                        <a href="admin-branch.php" class="list-group-item list-group-item-action  active"> Thông
                             tin
                             thương hiệu <i class="menu-icon fas fa-archway"></i></a>
                     </li>
@@ -164,19 +164,7 @@
                                             <div class=" mb-2">
                                                 <h4 class="text-center mt-3 mb-4">Danh sách thương hiệu</h4>
                                                 <div class="row">
-                                                    <div class="show-page mb-3 ml-3">
-                                                        Hiển thị <span> <select id="show" onclick="select_page()">
-                                                                <option value="10">
-                                                                    10
-                                                                </option>
-                                                                <option value="20">
-                                                                    20
-                                                                </option>
-                                                                <option value="50">
-                                                                    50
-                                                                </option>
-                                                            </select></span> cột
-                                                    </div>
+                                                    
                                                     <div class="show-page " style="margin-left: 50px;">
 
                                                         Tìm kiếm <span> <input id="myInput"

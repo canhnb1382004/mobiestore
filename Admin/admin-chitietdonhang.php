@@ -1,19 +1,12 @@
 <?php   
   include('../db/connect.php');
+  session_start();
 ?>
 
 <?php 
-if(isset($_POST['capnhatsanpham'])) {
-  $id_update = $_POST['id_update'];
-  $tenthuonghieu = $_POST['tenthuonghieu'];
-  $soluongsanpham = $_POST['soluongsanpham'];
-  $mathuonghieu = $_POST['mathuonghieu'];
-  
-  $sql_update_category  = mysqli_query($conn,"UPDATE tbl_category SET category_name='$tenthuonghieu',category_ma='$mathuonghieu' ,category_soluong='$soluongsanpham' WHERE category_id='$id_update'");
     
- 
-}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,24 +17,21 @@ if(isset($_POST['capnhatsanpham'])) {
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Chỉnh sửa sản phẩm</title>
+  <title>Quản lí đơn hàng</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
   <link href="../css/all.min.css" rel="stylesheet" />
-
+  <link rel="stylesheet" href="../js/js_admin/script.js">
   <link rel="stylesheet" href="../fonts/fontawesome-free-5.15.4-web/css/all.min.css">
   </link><!-- Custom styles for this template -->
   <link href="../css/css_admin/admin.css" rel="stylesheet" />
-  <link rel="stylesheet" href="../js/js_admin/script.js">
-  <link rel="stylesheet" href="../css/css_admin/admin1.css">
-  <!-- (1): Khai báo sử dụng thư viện CKEditor -->
-  <script src="../ckeditor/ckeditor.js"></script>
 </head>
 
 <body>
   <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
+
       <!--Nav-->
       <div class="side-bar bg-light border-right" id="sidebar-wrapper">
             <div class="sidebar-heading text-center"><b>Mobile Shop</b></div>
@@ -75,6 +65,7 @@ if(isset($_POST['capnhatsanpham'])) {
                             thương hiệu <i class="menu-icon fas fa-archway"></i></a>
                     </li>
                     
+                        
                     <!-- <li>
                         <a href="admin-filter.html" class="list-group-item list-group-item-action "> Dữ liệu lọc <i
                                 class="menu-icon fas fa-filter"></i></a>
@@ -87,7 +78,6 @@ if(isset($_POST['capnhatsanpham'])) {
 
     <!-- Page Content -->
     <div id="page-content-wrapper">
-
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <button class="btn btn-primary" id="menu-toggle">
           <i class="fas fa-bars"></i>
@@ -121,8 +111,7 @@ if(isset($_POST['capnhatsanpham'])) {
                 <a class="dropdown-item" href="#">Something else here</a>
               </div>
             </li> -->
-          </ul>
-          <div class="modal fade" id="log-out" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            <div class="modal fade" id="log-out" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
@@ -137,86 +126,90 @@ if(isset($_POST['capnhatsanpham'])) {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                  <button type="button" class="btn btn-primary">Đăng xuất</button>
+                  <a href="http://localhost:8080/web-ban-dien-thoai/"><button type="button" class="btn btn-primary">Đăng xuất</button></a>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </nav>
-      <div class="container-fluid">
-        <div class="container">
-        <?php
-			if(isset($_GET['quanly'])=='capnhat'){
-				$id_capnhat = $_GET['capnhat_id'];
-				$sql_capnhat = mysqli_query($conn,"SELECT * FROM tbl_category WHERE category_id='$id_capnhat'");
-				$row_capnhat = mysqli_fetch_array($sql_capnhat);
-				
-      ?>
-          <h2 style="text-align: center;">Chỉnh Sửa Thương hiệu</h2>
-        
-          <form action="" method="POST" enctype="multipart/form-data">
-          
-              <div class="row">
-                <div class="col-6 space-top">
-                  <h5 class="spacing_form">Mã Thương hiệu</h5>
-                  <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><i class="fas fa-mobile-alt"></i></div>
-                      <input type="text" class="form-control py-4" name='mathuonghieu' value="<?php echo $row_capnhat['category_ma'] ?>" placeholder="Nhập Mã Thương Hiệu">
-                    </div>
-                   
-                  </div>
-                </div>
-                <div class="col-6 space-top">
-                  <h5 class="spacing_form">Tên Thương hiệu</h5>
-                  <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><i class="fas fa-dollar-sign"></i></div>
-                    </div>
-                    <input type="text"  class="form-control py-4" name='tenthuonghieu' value="<?php echo $row_capnhat['category_name'] ?>" placeholder="Nhập Tên Thương Hiệu">
-                    <input type="hidden" class="form-control" name="id_update" value="<?php echo $row_capnhat['category_id'] ?>">
-                  </div>
-                </div>
-              </div>
               
-              <div class="row">
-                <div class="col-6 space-top">
-                  <h5 class="spacing_form">Số Lượng Sản Phẩm</h5>
-                  <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><i class="fas fa-mobile-alt"></i></div>
-                    </div>
-                    <input type="text"  class="form-control py-4" name='soluongsanpham' value="<?php echo $row_capnhat['category_soluong'] ?>" placeholder="Nhập Số Lượng Sản Phẩm">
-                  </div>
-                </div>
-                
-              </div>
-            
-              
+                <table width="100%" class="text-center  table content-detail  table-hover">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Mã khách hàng</th>
+                        <th>Tên khách hàng</th>
+                        <th><span title="Số điện thoại"> Số điện thoại</span></th>
+                        <th>Hình thức thanh toán</th>
+                        <th style="min-width: 300px;"> Địa chỉ</th>
+                      </tr>
+                    </thead>
+                    <?php 
+                        if(isset($_GET['id'])){
+                            $id=(int)$_GET['id'];
+                           
+                        }
+                        // echo("SELECT * FROM tbl_admin_donhang , tbl_donhang WHERE tbl_admin_donhang.admin_makhachhang =$id AND tbl_donhang.donhang_user = $id ");
+                        $sql_donhangchitiet= mysqli_query($conn,"SELECT * FROM tbl_admin_donhang, tbl_khachhang WHERE tbl_admin_donhang.admin_makhachhang =$id AND tbl_khachhang.khachhang_id = $id ");
+                        foreach( $sql_donhangchitiet as $row_donhangchitiet ){
+                    ?>  
+                    <tr>
+                    <td><?php echo $row_donhangchitiet['admin_makhachhang'] ?></td>
+                    <td><?php echo $row_donhangchitiet['khachhang_name'] ?></td>
+                    <td><span title="Số điện thoại"><?php echo $row_donhangchitiet['khachhang_number'] ?></span></td> 
+                    <td>Thanh toán khi nhận hàng</td>
+                    <td style="min-width: 300px;"></th>
+                        <?php echo $row_donhangchitiet['khachhang_diachi'] ?>
+                    </tr>
+                    <?php
+                        } 
                     
-              <div class="row" style="margin-top: 60px;">
-                <input class="btn btn-danger col-sm-3 row space-top space-bottom " name='capnhatsanpham' type="submit" value="Chỉnh Sửa Thương Hiệu">
-              </div>
-                 
-          </form>
-          <?php
-        }
-				?>
-        </div>
-        
-      </div>
-      
-    </div>
+                    ?>
+                </table>
+                  
+                <table width="100%" class="text-center  table content-detail  table-hover">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Hình ảnh</th>
+                        
+                        <th>Tên sản phẩm</th>
+                        
+                        <th>Số lượng</th>
+                        <th> Giá</th>
+                        <th> Giá Khuyến Mãi</th>
+                        <th> Thành Tiền </th>
+                      </tr>
+                    </thead>
+                    <?php 
+                        if(isset($_GET['id'])){
+                            $id=(int)$_GET['id'];
+                           
+                        }
+                        // echo("SELECT * FROM tbl_admin_donhang , tbl_donhang WHERE tbl_admin_donhang.admin_makhachhang =$id AND tbl_donhang.donhang_user = $id ");
+                        $sql_donhangchitiet= mysqli_query($conn,"SELECT * FROM tbl_admin_donhang, tbl_donhang WHERE tbl_admin_donhang.admin_makhachhang =$id AND tbl_donhang.donhang_user = $id ");
+                        foreach( $sql_donhangchitiet as $row_donhangchitiet ){
+                    ?>  
+                    <tr>
+                      <td style="max-width: 200px;"><img src="../imagine_product/<?php echo $row_donhangchitiet['donhang_product_img'] ?>" width="100px"
+                          height="100px" alt="">
+                      </td>
+                      
+                      <td style="min-width: 200px;"><?php echo $row_donhangchitiet['donhang_product_name'] ?></th>
+                      
+                      <td style="min-width: 200px;"><?php echo $row_donhangchitiet['donhang_product_soluong'] ?></th>
+                      <td style="min-width: 200px;"><?php echo $row_donhangchitiet['donhang_product_gia'] ?></th>
+                      <td style="min-width: 200px;"><?php echo $row_donhangchitiet['donhang_khuyenmai'] ?></th>
+                      <td style="min-width: 200px;"><?php echo $row_donhangchitiet['donhang_thanhtien'] ?></th>
+                    </tr>
+                    <?php
+                        } 
+                    
+                    ?>
+                </table>
 
-    <!-- /#page-content-wrapper -->
-  </div>
-  <!-- /#wrapper -->
-  
-  
+           
 
-
-  <!-- Bootstrap core JavaScript -->
+      <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -226,18 +219,20 @@ if(isset($_POST['capnhatsanpham'])) {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
-
+  </script>
+  <!-- search -->
+  <script>
+    $(document).ready(function () {
+      $("#myInput").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#content-table tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
   </script>
   <script src="../js/js_admin/divide-page.js"></script>
-
-  <!-- chkeditor -->
-  <script src="../ckeditor/ckeditor.js"></script>
-  <script>CKEDITOR.replace('ten');</script>
-  <!-- /chkeditor -->
-
-  <!-- add color -->
-
-
+  <script src="../js/js_admin/confirmed.js"></script>
 </body>
 
 </html>

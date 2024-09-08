@@ -1,21 +1,46 @@
 <?php   
   include('db/connect.php');
+  session_start();
 ?>
 
 <?php   
   if(isset($_POST['dangky'])){
-    $ten = $_POST['ten'];
+    $name = $_POST['name'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $diachi = $_POST['diachi'];
-    $sql_insert_guess = mysqli_query($conn,"INSERT INTO tbl_khachhang(khachhang_name,khachhang_number,khachhang_email,khachhang_password,khachhang_diachi) VALUES ($ten,$phone,$email,$password,$diachi)");
+
+
+    // check account in admin
+    $sql_admin = mysqli_query($conn,"SELECT * FROM tbl_admin WHERE admin_email = '$email'");
+    
+    $row_admin_num = mysqli_num_rows($sql_admin);
+
+    $sql_khachhang = mysqli_query($conn,"SELECT * FROM tbl_khachhang WHERE khachhang_email = '$email'");
+    
+    $row_khachhang_num = mysqli_num_rows($sql_khachhang);
+    if($row_admin_num>0){
+        $_SESSION['error_login']= "Tài khoản đã tồn tại, vui lòng đăng kí lại."; 
+        header("Location:signup-form.php");
+        exit();
+    }elseif($row_khachhang_num>0){
+        $_SESSION['error_login']= "Tài khoản đã tồn tại, vui lòng đăng kí lại."; 
+        header("Location:signup-form.php");
+        exit();
+    }else{    
+        $sql_insert_guess = mysqli_query($conn,"INSERT INTO tbl_khachhang(khachhang_name,khachhang_number,khachhang_email,khachhang_password,khachhang_diachi) VALUES ('$name','$phone','$email','$password','$diachi')");
+        $sql_guess1 = mysqli_query($conn,"SELECT * FROM tbl_khachhang ");
+        $row_guess1 = mysqli_fetch_array($sql_guess1);
+        $_SESSION['user']['signup'] = $row_guess1['khachhang_name'];
+        $_SESSION['user']['signup_ID'] = $row_guess1['khachhang_id'];
+        echo ('<script>alert("Đăng Kí Thành Công")</script>');
+    }
+
+    
+    
   }
 ?>
-
-
-
-
 
 
 <!DOCTYPE html>
@@ -78,19 +103,34 @@
                 </div>
                 <!-- /.search -->
                 <!-- account -->
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                    <div class="account-section">
-                        <ul>
-                            <li><a href="account.php" class="title hidden-xs">Tài khoản</a></li>
-                            <li class="hidden-xs">|</li>
-                            <li><a href="login-form.php" class="title hidden-xs">Đăng Nhập</a></li>
-                            <li><a href="favorite-list.php"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i> <sup
-                                        class="cart-quantity">1</sup></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.account -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="account-section">
+                    <ul>
+                        <li><a href="account.php" class="title hidden-xs"><?php
+                            if(isset($_SESSION['user']['login'])){
+                                echo $_SESSION['user']['login'];
+                            }else{
+                                echo('Tài khoản');
+                            }
+                        ?></a></li>
+                        <li class="hidden-xs">|</li>
+                        <li><?php
+                            if(isset($_SESSION['user']['login'])){
+                            ?>
+                            <a href="log-out.php" class="title hidden-xs">Đăng Xuất</a>
+                            <?php
+                            }else{
+                            ?>    
+                            <a href="login-form.php" class="title hidden-xs">Đăng Nhập</a>
+                            <?php
+                            }
+                        ?></li>
+                        
+                        <li><a href="cart.php" class="title"><i class="fa fa-shopping-cart"></i>   <sup class="cart-quantity">1</sup></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.account -->
                 </div>
                 <!-- search -->
             </div>
@@ -106,10 +146,11 @@
                                 <li class="active"><a href="index.php">Trang chủ</a></li>
                                 <li><a href="product-list.php">Điện thoại</a>
                                 </li>
+                                
                                 <li><a href="about.php">Thông tin</a>
                                 </li>
-                                <li><a href="blog-default.php">Bài viết</a> </li>
-                                <li><a href="contact-us.php">Liên hệ, hỗ trợ</a>
+
+                                <li><a href="contact-us.php">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>
@@ -148,41 +189,47 @@
                                 <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 mb20">
                                     <h3 class="mb10">Tạo tài khoản</h3>
                                     <p>Vui lòng điền đầy đủ các thông tin bên dưới</p>
+                                    <?php
+                                    if (isset($_SESSION['error_login'])) {
+                                        echo "<p style='color: red;'>" . $_SESSION['error_login'] . "</p>";
+                                        unset($_SESSION['error_login']);
+                                    }
+                                ?>
                                 </div>
                                 <form method="POST" action="" enctype="multipart/form-data">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label sr-only" for="name"></label>
-                                            <input id="name" name="ten" type="text" class="form-control"
+                                            <label class="control-label sr-only" ></label>
+                                            <input id="name" name="name" type="text" class="form-control"
                                                 placeholder="Họ và tên" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label sr-only" for="phone"></label>
+                                            <label class="control-label sr-only" ></label>
                                             <input id="phone" name="phone" type="text" class="form-control"
                                                 placeholder="Điện thoại" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label sr-only" for="email"></label>
+                                            <label class="control-label sr-only" ></label>
                                             <input id="email" name="email" type="text" class="form-control"
                                                 placeholder="Email" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label  sr-only" for="password"></label>
+                                            <label class="control-label  sr-only" ></label>
                                             <input id="password" name="password" type="password" class="form-control"
                                                 placeholder="Mật khẩu" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label  sr-only" for="address"></label>
+                                            <label class="control-label  sr-only" ></label>
                                             <input id="password" name="diachi" type="text" class="form-control"
-                                                placeholder="diachi" required>
+                                                placeholder="Địa Chỉ" required>
                                         </div>
                                     </div>
                                     
